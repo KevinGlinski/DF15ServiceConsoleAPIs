@@ -1,0 +1,19 @@
+<apex:page >
+    <iframe id='searchFrame' src='https://www.duckduckgo.com/' width='100%' height='800px'/>
+    <apex:includeScript value="/support/console/32.0/integration.js"/>
+    <head>
+        <script src='https://code.jquery.com/jquery-1.11.3.min.js'></script>
+        <script>
+       		sforce.console.addEventListener( "DF15OPENSEARCH", function(){
+                 sforce.console.setCustomConsoleComponentVisible(true);
+            });
+
+            sforce.console.addEventListener('DFSEARCH', function(result)
+                    {
+                        $('#searchFrame').prop('src','https://duckduckgo.com/?q=' +result.message + '+user+guide');
+                        sforce.console.setCustomConsoleComponentVisible(true);
+                    });
+                    
+        </script>
+    </head>
+</apex:page>

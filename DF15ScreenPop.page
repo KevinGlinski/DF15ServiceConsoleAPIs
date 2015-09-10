@@ -1,0 +1,69 @@
+<apex:page controller="DF15ScreenPop">
+    <script src="/support/console/34.0/integration.js" type="text/javascript"></script>
+    <script>
+    var isInConsole = false;
+    sforce.console.isInCustomConsoleComponent(function(result){
+    	if(result.inCustomConsoleComponent){
+        	isInConsole = true;
+
+        }else{
+        	//we are in a regular tab
+            sforce.console.setTabTitle('Screen Pop Page');
+        }
+    });
+
+    function performConsoleScreenPop(phone) {
+        if(isInConsole){
+			performConsoleScreenPopInComponent(phone);
+        }else{
+        	performConsoleScreenPopInTab(phone);
+        }
+    }
+
+    function performConsoleScreenPopInComponent(phone) {
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DF15ScreenPop.getScreenPopIds}',
+			phone,
+			function(result, event){
+				if (event.status) {
+                	var consoleUrlParts = [];
+                    for (var i=0; i<result.length; i++) {
+                    	consoleUrlParts.push('/' + result[i]);
+                    }
+                    sforce.console.generateConsoleUrl(consoleUrlParts, function(result){
+                    	sforce.console.openConsoleUrl(null, result.consoleUrl, true, null, null, function(){
+                            sforce.console.setCustomConsoleComponentVisible(false);
+                        });
+                    } );
+                }
+          	},
+            {escape: true});
+	}
+
+    function performConsoleScreenPopInTab(phone) {
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.DF15ScreenPop.getScreenPopIds}',
+			phone,
+			function(result, event){
+				if (event.status) {
+                	var consoleUrlParts = [];
+                    for (var i=0; i<result.length; i++) {
+                    	consoleUrlParts.push('/' + result[i]);
+                    }
+                    
+                    sforce.console.generateConsoleUrl(consoleUrlParts, function(result){
+                    	sforce.console.openConsoleUrl(null, result.consoleUrl, true, null, null, function(){
+                            sforce.console.getEnclosingTabId(function(enclosingTabResult){
+                                sforce.console.closeTab(enclosingTabResult.id);
+                            });
+                        });
+                    } );
+                }
+          	},
+            {escape: true});
+	}
+
+   	</script>
+    <input id="phoneNumber" value="2128425500" type="tel"></input>
+    <button onClick="performConsoleScreenPop('2128425500');">
+         DO SCREEN POP
+    </button>
+</apex:page>
