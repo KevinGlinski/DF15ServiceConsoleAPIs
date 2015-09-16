@@ -13,7 +13,13 @@
                         $('#searchFrame').prop('src','https://duckduckgo.com/?q=' +result.message + '+user+guide');
                         sforce.console.setCustomConsoleComponentVisible(true);
                     });
-                    
+
+
+                sforce.console.cti.onCallEnd(function(call){
+                           saveCallLog(call);
+                });
+
+
         </script>
     </head>
 </apex:page>
